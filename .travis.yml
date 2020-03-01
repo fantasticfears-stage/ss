@@ -9,8 +9,6 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_0d614de04ba8_key -iv $encrypted_0d614de04ba8_iv -in coding_ed25519.enc -out ~/.ssh/coding_ed25519 -d
 script:
   - npm run build
-  - mkdir -p build/region && cp build/index.html build/region/index.html
-  - mkdir -p build/about && cp build/index.html build/about/index.html
 after_success:
   - eval "$(ssh-agent -s)" #start the ssh agent
   - chmod 600 ~/.ssh/coding_ed25519 # this key should have push access
@@ -18,6 +16,6 @@ after_success:
   - ssh-keyscan e.coding.net >> ~/.ssh/known_hosts
   - git remote add deploy git@e.coding.net:erickg/ss.git
   - git checkout -b coding-pages
-  - yes | cp -rf build/* .
+  - rm -rf src static public && yes | cp -rf build/* . && rm -rf build
   - git add . && git commit -m "deploy files"
   - git push deploy coding-pages -f
